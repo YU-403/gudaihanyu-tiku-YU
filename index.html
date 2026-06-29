@@ -31,7 +31,7 @@ body {
   font-size: 16px; cursor: pointer; transition: all 0.2s;
   text-align: center; margin-bottom: 14px;
 }
-.btn:hover { background: #f0ebe0; transform: translateY(-1px); }
+.btn:hover { background: #f0ebe0; transform: translateY(-2px) scale(1.04); }
 .btn-primary { background: #8b6f47; color: #fff; border-color: #8b6f47; }
 .btn-primary:hover { background: #7a5e3a; }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -45,7 +45,7 @@ body {
 .mode-card {
   background: #fff; border: 2px solid #e0d5c5; border-radius: 14px;
   padding: 26px 22px; margin-bottom: 18px; cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   position: relative; overflow: hidden;
 }
 .mode-card::before {
@@ -59,9 +59,9 @@ body {
 
 /* Selection lists */
 .sel-list { list-style: none; }
-.sel-list li { padding: 15px 18px; background: #fff; border: 1px solid #e0d5c5; border-radius: 10px; margin-bottom: 9px; cursor: pointer; transition: all 0.15s; font-size: 16px; position: relative; }
-.sel-list li:hover { border-color: #8b6f47; background: #faf7f2; }
-.sel-list li:active { transform: scale(0.98); }
+.sel-list li { padding: 15px 18px; background: #fff; border: 2px solid #e0d5c5; border-radius: 10px; margin-bottom: 9px; cursor: pointer; transition: all 0.15s; font-size: 16px; position: relative; }
+.sel-list li:hover { border-color: #8b6f47; background: #faf7f2; transform: scale(1.04); }
+.sel-list li:active { transform: scale(0.98); transition: all 0.1s; }
 .sel-list li .count { float: right; color: #b0a090; font-size: 14px; }
 
 /* Quiz */
@@ -81,7 +81,7 @@ body {
   cursor: pointer; transition: all 0.15s; background: #fff;
   font-size: 16px;
 }
-.opt-item:hover { border-color: #b8a88a; background: #faf7f2; }
+.opt-item:hover { border-color: #b8a88a; background: #faf7f2; transform: scale(1.04); }
 .opt-item.selected { border-color: #8b6f47; background: #f5efe6; }
 .opt-item.correct { border-color: #34a853; background: #e6f4ea; }
 .opt-item.wrong { border-color: #ea4335; background: #fce8e6; }
@@ -107,6 +107,8 @@ body {
 .tf-btn:hover { border-color: #b8a88a; transform: translateY(-1px); }
 .tf-btn.selected-true { border-color: #34a853; background: #e6f4ea; color: #137333; }
 .tf-btn.selected-false { border-color: #ea4335; background: #fce8e6; color: #c5221f; }
+.tf-btn.result-true { border-color: #34a853; background: #e6f4ea; color: #137333; }
+.tf-btn.result-false { border-color: #ea4335; background: #fce8e6; color: #c5221f; }
 
 /* Result panel */
 .result-panel { display: none; margin-top: 18px; padding: 20px; border-radius: 12px; }
@@ -156,6 +158,46 @@ body {
   .q-text { font-size: 16px; }
   .tf-btn { font-size: 16px; padding: 16px; }
 }
+
+/* ── 装饰动画 ── */
+@keyframes pulse-diamond {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(192,57,43,0); }
+  50% { box-shadow: 0 0 12px rgba(192,57,43,0.25); }
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page.active {
+  animation: fade-in 0.3s ease;
+}
+.header .divider .diamond {
+  animation: pulse-diamond 3s ease-in-out infinite;
+}
+.mode-card {
+  animation: fade-in 0.4s ease both;
+}
+.mode-card:nth-child(2) { animation-delay: 0.1s; }
+.mode-card:nth-child(3) { animation-delay: 0.2s; }
+.sel-list li {
+  animation: fade-in 0.3s ease both;
+}
+.sel-list li:nth-child(1) { animation-delay: 0.03s; }
+.sel-list li:nth-child(2) { animation-delay: 0.06s; }
+.sel-list li:nth-child(3) { animation-delay: 0.09s; }
+.sel-list li:nth-child(4) { animation-delay: 0.12s; }
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(70px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+#question-area {
+  animation: slide-in 0.7s cubic-bezier(0.12, 0.8, 0.2, 1);
+}
 </style>
 </head>
 <body>
@@ -188,7 +230,7 @@ body {
     <button class="btn btn-sm" style="width:auto;margin:0;" onclick="App.showHelp()">使用說明</button>
   </div>
 
-    <div style="margin-top:24px;margin-left:-70px;margin-right:-70px;padding:26px 56px;background:rgba(255,255,255,0.7);border-radius:10px;border:1px solid #e0d5c5;font-size:18px;line-height:2.3;color:#666;">
+    <div style="margin-top:24px;margin-left:-70px;margin-right:-70px;padding:26px 56px;background:rgba(255,255,255,0.7);border-radius:10px;border:1px solid #e0d5c5;font-size:18px;line-height:2.3;color:#666;box-shadow:inset 0 1px 3px rgba(0,0,0,0.04);">
     <p><strong>關於題目的來源：</strong>基本按照課本的已學部分編制，工作流大概是以網上搜到的題目和自己寫的題目一起作爲樣本提示，編寫提示詞，給大模型接一個含有整理過的課本原文的 RAG，然後仿照樣本形式生成題目與答案解析。</p>
     <p style="margin-top:8px;">歷史數據保存在瀏覽器本地，建議用電腦使用，以獲得最佳體驗，免登錄，無需擔心數據泄露，因爲我根本就沒寫後端，只有前端。</p>
     <p style="margin-top:8px;">由於使用大模型生成外加處理 PDF 時使用了 OCR（MinerU），所以錯誤是不可避免的，如果在使用的過程中發現了錯誤、或者有更好的建議，歡迎將您的指正與建議發送到以下地址：<a href="mailto:1398581306@qq.com" style="color:#8b6f47;text-decoration:underline;">1398581306@qq.com</a></p>
@@ -218,7 +260,7 @@ body {
 
 <!-- ───── 幫助彈窗 ───── -->
 <div id="help-overlay" class="overlay hidden" onclick="if(event.target===this)App.closeHelp()">
-  <div class="modal" onclick="event.stopPropagation()">
+  <div class="modal" style="max-width:1200px;" onclick="event.stopPropagation()">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
       <h3 style="font-size:18px;font-family:SimHei,sans-serif;color:#5c3d2e;">使用說明</h3>
       <span onclick="App.closeHelp()" style="cursor:pointer;font-size:24px;color:#999;">&times;</span>
@@ -612,6 +654,9 @@ var App = {
     document.getElementById('confirm-btn').style.display = 'block';
     document.getElementById('next-btn').style.display = 'none';
     document.getElementById('answer-text').style.display = 'none';
+    // 触发题目切换动画
+    var qa = document.getElementById('question-area');
+    if (qa) { qa.style.animation = 'none'; void qa.offsetHeight; qa.style.animation = ''; }
   },
 
   selectSingle: function(label) {
@@ -670,12 +715,13 @@ var App = {
       });
     } else {
       isCorrect = (this.selectedOption === q.answer);
+      // 保留用户选择标记，追加正确/错误样式
       if (q.answer) {
-        document.getElementById('tf-true').className = 'tf-btn result-true';
-        if (!this.selectedOption) document.getElementById('tf-false').className = 'tf-btn result-false';
+        document.getElementById('tf-true').classList.add('result-true');
+        if (this.selectedOption === false) document.getElementById('tf-false').classList.add('result-false');
       } else {
-        document.getElementById('tf-false').className = 'tf-btn result-false';
-        if (this.selectedOption) document.getElementById('tf-true').className = 'tf-btn result-true';
+        document.getElementById('tf-false').classList.add('result-true');
+        if (this.selectedOption === true) document.getElementById('tf-true').classList.add('result-false');
       }
     }
 
@@ -818,14 +864,21 @@ var App = {
   }
 };
 
-// 启动弹窗：显示 + 3秒后启用关闭
+// 启动弹窗：动态读秒
 (function() {
   var overlay = document.getElementById('startup-overlay');
   var btn = document.getElementById('startup-close-main');
   if (!overlay) return;
-  setTimeout(function() {
-    if (btn) { btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; btn.textContent = '關閉'; }
-  }, 5000);
+  var count = 5;
+  if (btn) { btn.textContent = '關閉（' + count + '）'; }
+  var timer = setInterval(function() {
+    count--;
+    if (btn) { btn.textContent = '關閉（' + count + '）'; }
+    if (count <= 0) {
+      clearInterval(timer);
+      if (btn) { btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; btn.textContent = '關閉'; }
+    }
+  }, 1000);
 })();
 </script>
 </body>
