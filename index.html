@@ -187,11 +187,31 @@ body {
     <button class="btn btn-sm" style="width:auto;margin:0;" onclick="App.showHelp()">使用說明</button>
   </div>
 
-    <div style="margin-top:24px;margin-left:-50px;margin-right:-50px;padding:22px 48px;background:rgba(255,255,255,0.7);border-radius:10px;border:1px solid #e0d5c5;font-size:16px;line-height:2.2;color:#666;">
-    <p><strong>關於題目來源：</strong>基本按照課本的已學部分編制，工作流大概是以網上搜到的題目和自己寫的題目一起作爲樣本提示，編寫提示詞，給大模型接一個含有整理過的課本原文的 RAG，然後仿照樣本形式生成題目與答案解析。</p>
+    <div style="margin-top:24px;margin-left:-70px;margin-right:-70px;padding:26px 56px;background:rgba(255,255,255,0.7);border-radius:10px;border:1px solid #e0d5c5;font-size:18px;line-height:2.3;color:#666;">
+    <p><strong>關於題目的來源：</strong>基本按照課本的已學部分編制，工作流大概是以網上搜到的題目和自己寫的題目一起作爲樣本提示，編寫提示詞，給大模型接一個含有整理過的課本原文的 RAG，然後仿照樣本形式生成題目與答案解析。</p>
+    <p style="margin-top:8px;">歷史數據保存在瀏覽器本地，建議用電腦使用，以獲得最佳體驗，免登錄，無需擔心數據泄露，因爲我根本就沒寫後端，只有前端。</p>
     <p style="margin-top:8px;">由於使用大模型生成外加處理 PDF 時使用了 OCR（MinerU），所以錯誤是不可避免的，如果在使用的過程中發現了錯誤、或者有更好的建議，歡迎將您的指正與建議發送到以下地址：<a href="mailto:1398581306@qq.com" style="color:#8b6f47;text-decoration:underline;">1398581306@qq.com</a></p>
     <p style="margin-top:8px;">已在 GitHub 上開源，項目地址：<a href="https://github.com/YU-403/gudaihanyu-tiku-YU" style="color:#8b6f47;text-decoration:underline;" target="_blank">https://github.com/YU-403/gudaihanyu-tiku-YU</a>。</p>
-    <p style="margin-top:4px;text-align:right;color:#b0a090;">——YU-403</p>
+    <p style="margin-top:4px;">祝各位複習順利。</p>
+    <p style="text-align:right;color:#b0a090;">——YU-403</p>
+  </div>
+</div>
+
+<!-- ───── 啓動提示彈窗 ───── -->
+<div id="startup-overlay" class="overlay">
+  <div class="modal" style="max-width:960px;">
+    <h3 style="font-size:22px;font-family:SimHei,sans-serif;color:#5c3d2e;margin-bottom:16px;">歡迎使用</h3>
+	    <div style="font-size:20px;line-height:2.2;color:#555;">
+      <p><strong>關於題目的來源：</strong>基本按照課本的已學部分編制，工作流大概是以網上搜到的題目和自己寫的題目一起作爲樣本提示，編寫提示詞，給大模型接一個含有整理過的課本原文的 RAG，然後仿照樣本形式生成題目與答案解析。</p>
+      <p style="margin-top:10px;">歷史數據保存在瀏覽器本地，建議用電腦使用，以獲得最佳體驗，免登錄，無需擔心數據泄露，因爲我根本就沒寫後端，只有前端。</p>
+      <p style="margin-top:10px;">由於使用大模型生成外加處理 PDF 時使用了 OCR（MinerU），所以錯誤是不可避免的，如果在使用的過程中發現了錯誤、或者有更好的建議，歡迎將您的指正與建議發送到以下地址：<a href="mailto:1398581306@qq.com" style="color:#8b6f47;text-decoration:underline;">1398581306@qq.com</a></p>
+      <p style="margin-top:10px;">已在 GitHub 上開源，項目地址：<a href="https://github.com/YU-403/gudaihanyu-tiku-YU" target="_blank" style="color:#8b6f47;text-decoration:underline;">https://github.com/YU-403/gudaihanyu-tiku-YU</a></p>
+      <p style="margin-top:6px;">祝各位複習順利。</p>
+      <p style="text-align:right;color:#b0a090;margin-top:4px;">——YU-403</p>
+    </div>
+    <div style="text-align:right;margin-top:14px;">
+      <button class="btn btn-primary btn-sm" id="startup-close-main" style="width:auto;margin:0;display:inline-block;pointer-events:none;opacity:0.5;" onclick="App.closeStartup()">關閉（5s）</button>
+    </div>
   </div>
 </div>
 
@@ -362,21 +382,31 @@ var App = {
   },
 
   showHome: function() {
+    Sound.click();
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     document.getElementById('page-home').classList.add('active');
   },
 
+  // ===== 启动弹窗 =====
+  closeStartup: function() {
+    Sound.click();
+    document.getElementById('startup-overlay').classList.add('hidden');
+  },
+
   // ===== 帮助弹窗 =====
   showHelp: function() {
+    Sound.click();
     document.getElementById('help-overlay').classList.remove('hidden');
   },
   closeHelp: function() {
+    Sound.click();
     document.getElementById('help-overlay').classList.add('hidden');
   },
 
   // ===== 专题续题 =====
   _pendingResume: null,
   closeResume: function() {
+    Sound.click();
     document.getElementById('resume-overlay').classList.add('hidden');
     this._pendingResume = null;
   },
@@ -403,6 +433,7 @@ var App = {
   },
 
   goTopic: function() {
+    Sound.click();
     this.mode = 'topic';
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     document.getElementById('page-section').classList.add('active');
@@ -410,6 +441,7 @@ var App = {
   },
 
   goRandom: function() {
+    Sound.click();
     this.mode = 'random'; this.section = null; this.subsection = null;
     var indices = []; for (var i = 0; i < QUESTIONS.length; i++) indices.push(i);
     this.shuffle(indices);
@@ -418,6 +450,7 @@ var App = {
   },
 
   goCareer: function() {
+    Sound.click();
     this.mode = 'career'; this.section = null; this.subsection = null;
     this.totalCorrect = 0; this.totalWrong = 0;
     this.loadCareer();
@@ -425,11 +458,13 @@ var App = {
   },
 
   showSection: function() {
+    Sound.click();
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     document.getElementById('page-section').classList.add('active');
   },
 
   showSubsection: function(section) {
+    Sound.click();
     this.section = section;
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     document.getElementById('page-subsection').classList.add('active');
@@ -460,6 +495,7 @@ var App = {
   },
 
   startTopicSubsection: function(section, subsection) {
+    Sound.click();
     // 检查是否有保存的进度
     var key = 'guwen_topic_' + section + '_' + subsection;
     var saved = localStorage.getItem(key);
@@ -700,6 +736,7 @@ var App = {
   },
 
   quitQuiz: function() {
+    Sound.click();
     if (this.mode === 'topic') {
       // 保存进度
       var key = 'guwen_topic_' + this.section + '_' + this.subsection;
@@ -767,6 +804,7 @@ var App = {
   },
 
   resetCareer: function() {
+    Sound.click();
     localStorage.removeItem('guwen_career');
     this.showHome();
   },
@@ -778,6 +816,16 @@ var App = {
     }
   }
 };
+
+// 启动弹窗：显示 + 3秒后启用关闭
+(function() {
+  var overlay = document.getElementById('startup-overlay');
+  var btn = document.getElementById('startup-close-main');
+  if (!overlay) return;
+  setTimeout(function() {
+    if (btn) { btn.style.pointerEvents = 'auto'; btn.style.opacity = '1'; btn.textContent = '關閉'; }
+  }, 5000);
+})();
 </script>
 </body>
 </html>
