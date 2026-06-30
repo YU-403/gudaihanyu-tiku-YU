@@ -28,18 +28,18 @@ body {
   display: block; width: 100%; padding: 16px 20px;
   border: 2px solid #d4c5a9; border-radius: 12px;
   background: #fff; color: #5c3d2e;
-  font-size: 16px; cursor: pointer; transition: all 0.2s;
+  font-size: 16px; cursor: pointer; transition: all 0.3s ease;
   text-align: center; margin-bottom: 14px;
 }
 .btn:hover { background: #f0ebe0; transform: translateY(-2px) scale(1.04); }
 .btn-primary { background: #8b6f47; color: #fff; border-color: #8b6f47; }
-.btn-primary:hover { background: #7a5e3a; }
+.btn-primary:hover { background: #7a5e3a; transform: scale(1.04); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 .btn-sm { padding: 10px 16px; font-size: 14px; display: inline-block; width: auto; }
 .btn-back { background: transparent; border: none; color: #8b6f47; cursor: pointer; font-size: 15px; padding: 4px 0; margin-bottom: 18px; }
 .btn-back:hover { text-decoration: underline; }
 .btn-danger { background: #d4a0a0; color: #5c2e2e; border-color: #c08080; }
-.btn-danger:hover { background: #c08080; }
+.btn-danger:hover { background: #c08080; transform: scale(1.04); }
 
 /* Mode cards */
 .mode-card {
@@ -53,13 +53,13 @@ body {
   background: linear-gradient(to bottom, #c4a57a, #d4c5a9);
   border-radius: 4px 0 0 4px;
 }
-.mode-card:hover { border-color: #8b6f47; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.mode-card:hover { border-color: #8b6f47; transform: translateY(-2px) scale(1.04); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .mode-card h3 { font-size: 19px; color: #5c3d2e; margin-bottom: 6px; font-family: "SimHei", "Microsoft JhengHei", "Noto Sans TC", sans-serif; }
 .mode-card p { font-size: 14px; color: #999; }
 
 /* Selection lists */
 .sel-list { list-style: none; }
-.sel-list li { padding: 15px 18px; background: #fff; border: 2px solid #e0d5c5; border-radius: 10px; margin-bottom: 9px; cursor: pointer; transition: all 0.15s; font-size: 16px; position: relative; }
+.sel-list li { padding: 15px 18px; background: #fff; border: 2px solid #e0d5c5; border-radius: 10px; margin-bottom: 9px; cursor: pointer; transition: all 0.3s ease; font-size: 16px; position: relative; }
 .sel-list li:hover { border-color: #8b6f47; background: #faf7f2; transform: scale(1.04); }
 .sel-list li:active { transform: scale(0.98); transition: all 0.1s; }
 .sel-list li .count { float: right; color: #b0a090; font-size: 14px; }
@@ -78,7 +78,7 @@ body {
 .opt-item {
   display: flex; align-items: flex-start; gap: 12px;
   padding: 14px 16px; border: 2px solid #e0d5c5; border-radius: 10px;
-  cursor: pointer; transition: all 0.15s; background: #fff;
+  cursor: pointer; transition: all 0.3s ease; background: #fff;
   font-size: 16px;
 }
 .opt-item:hover { border-color: #b8a88a; background: #faf7f2; transform: scale(1.04); }
@@ -104,7 +104,7 @@ body {
   font-size: 18px; font-weight: 600; cursor: pointer; text-align: center;
   background: #fff; transition: all 0.15s;
 }
-.tf-btn:hover { border-color: #b8a88a; transform: translateY(-1px); }
+.tf-btn:hover { border-color: #b8a88a; transform: translateY(-1px) scale(1.04); }
 .tf-btn.selected-true { border-color: #34a853; background: #e6f4ea; color: #137333; }
 .tf-btn.selected-false { border-color: #ea4335; background: #fce8e6; color: #c5221f; }
 .tf-btn.result-true { border-color: #34a853; background: #e6f4ea; color: #137333; }
@@ -169,8 +169,8 @@ body {
   50% { box-shadow: 0 0 12px rgba(192,57,43,0.25); }
 }
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .page.active {
   animation: fade-in 0.3s ease;
@@ -179,12 +179,12 @@ body {
   animation: pulse-diamond 3s ease-in-out infinite;
 }
 .mode-card {
-  animation: fade-in 0.4s ease both;
+  animation: fade-in 0.4s ease backwards;
 }
 .mode-card:nth-child(2) { animation-delay: 0.1s; }
 .mode-card:nth-child(3) { animation-delay: 0.2s; }
 .sel-list li {
-  animation: fade-in 0.3s ease both;
+  animation: fade-in 0.3s ease backwards;
 }
 .sel-list li:nth-child(1) { animation-delay: 0.03s; }
 .sel-list li:nth-child(2) { animation-delay: 0.06s; }
@@ -197,6 +197,58 @@ body {
 }
 #question-area {
   animation: slide-in 0.7s cubic-bezier(0.12, 0.8, 0.2, 1);
+}
+
+/* ── 10项UI增强 ── */
+#confirm-btn:not(:disabled) {
+  transform: translateY(-2px);
+  transition: transform 0.15s ease;
+}
+@keyframes btn-press {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+@keyframes verdict-bounce {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes result-item {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+#result-panel .verdict {
+  animation: verdict-bounce 0.35s ease;
+}
+#result-panel .answer-text,
+#result-panel .explanation,
+#result-panel .know-trace {
+  opacity: 0; animation: result-item 0.3s ease forwards;
+}
+#result-panel .answer-text { animation-delay: 0.12s; }
+#result-panel .explanation { animation-delay: 0.24s; }
+#result-panel .know-trace { animation-delay: 0.36s; }
+@keyframes opt-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.opt-item.stagger {
+  animation: opt-in 0.25s ease backwards;
+}
+.progress-mini .bar {
+  transition: width 0.5s ease;
+  background-image: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+}
+@keyframes glow-flash {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); color: #c0392b; }
+  100% { transform: scale(1); }
+}
+.streak-badge {
+  font-family: SimHei, "Microsoft JhengHei", sans-serif;
+  font-size: 18px; font-weight: 700; color: #c0392b;
+  display: none; margin-top: 6px; text-align: center;
 }
 </style>
 </head>
@@ -236,7 +288,7 @@ body {
     <p style="margin-top:8px;">由於使用大模型生成外加處理 PDF 時使用了 OCR（MinerU），所以錯誤是不可避免的，如果在使用的過程中發現了錯誤、或者有更好的建議，歡迎將您的指正與建議發送到以下地址：<a href="mailto:1398581306@qq.com" style="color:#8b6f47;text-decoration:underline;">1398581306@qq.com</a></p>
     <p style="margin-top:8px;">已在 GitHub 上開源，項目地址：<a href="https://github.com/YU-403/gudaihanyu-tiku-YU" style="color:#8b6f47;text-decoration:underline;" target="_blank">https://github.com/YU-403/gudaihanyu-tiku-YU</a>。</p>
     <p style="margin-top:4px;">祝各位複習順利。</p>
-    <p style="text-align:right;color:#b0a090;">——YU-403</p>
+    <p style="text-align:right;color:#b0a090;">更新于 2026.06.30 ——YU-403</p>
   </div>
 </div>
 
@@ -250,7 +302,7 @@ body {
       <p style="margin-top:10px;">由於使用大模型生成外加處理 PDF 時使用了 OCR（MinerU），所以錯誤是不可避免的，如果在使用的過程中發現了錯誤、或者有更好的建議，歡迎將您的指正與建議發送到以下地址：<a href="mailto:1398581306@qq.com" style="color:#8b6f47;text-decoration:underline;">1398581306@qq.com</a></p>
       <p style="margin-top:10px;">已在 GitHub 上開源，項目地址：<a href="https://github.com/YU-403/gudaihanyu-tiku-YU" target="_blank" style="color:#8b6f47;text-decoration:underline;">https://github.com/YU-403/gudaihanyu-tiku-YU</a></p>
       <p style="margin-top:6px;">祝各位複習順利。</p>
-      <p style="text-align:right;color:#b0a090;margin-top:4px;">——YU-403</p>
+      <p style="text-align:right;color:#b0a090;margin-top:4px;">更新于 2026.06.30 ——YU-403</p>
     </div>
     <div style="text-align:right;margin-top:14px;">
       <button class="btn btn-primary btn-sm" id="startup-close-main" style="width:auto;margin:0;display:inline-block;pointer-events:none;opacity:0.5;" onclick="App.closeStartup()">關閉（5s）</button>
@@ -307,7 +359,7 @@ body {
 <div id="page-quiz" class="page">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
     <button class="btn-back" id="quiz-back-btn" onclick="App.quitQuiz()">← 退出</button>
-    <span style="font-size:14px;color:#999;" id="quiz-mode-label"></span>
+    <span style="font-size:14px;color:#999;" id="quiz-mode-label"></span><div id="streak-badge" class="streak-badge"></div>
   </div>
   <div class="progress-mini"><div class="bar" id="progress-bar" style="width:0%"></div></div>
   <div class="q-progress" id="progress-text"></div>
@@ -384,7 +436,7 @@ var Sound = {
 var App = {
   mode: null, section: null, subsection: null,
   questionList: [], currentIdx: 0,
-  totalCorrect: 0, totalWrong: 0,
+  totalCorrect: 0, totalWrong: 0, streak: 0,
   selectedOption: null, answered: false, currentQuestion: null,
   careerWrongIds: [],
 
@@ -609,12 +661,15 @@ var App = {
     if (this.mode === 'career') {
       var remaining = this.questionList.length + this.careerWrongIds.length;
       document.getElementById('progress-text').textContent = T.remain + ' ' + remaining + ' ' + T.questions;
-      document.getElementById('progress-bar').style.width = '0%';
+      var careerPct = this.totalCorrect / QUESTIONS.length * 100; document.getElementById('progress-bar').style.width = careerPct + '%';
       document.getElementById('quiz-mode-label').textContent = '正確 ' + this.totalCorrect + ' 個 · 錯誤 ' + this.totalWrong + ' 個';
-    } else {
+    } else if (this.mode === 'topic') {
       var pct = Math.round((this.currentIdx + 1) / total * 100);
       document.getElementById('progress-bar').style.width = pct + '%';
       document.getElementById('progress-text').textContent = (this.currentIdx + 1) + ' / ' + total;
+    } else {
+      document.getElementById('progress-bar').style.width = '0%';
+      document.getElementById('progress-text').textContent = '随机模式';
     }
 
     var badge = document.getElementById('type-badge');
@@ -631,9 +686,10 @@ var App = {
     if (q.type === 'single' || q.type === 'multiple') {
       optArea.classList.remove('hidden');
       tfArea.classList.add('hidden');
-      q.options.forEach(function(opt) {
+      q.options.forEach(function(opt, idx) {
         var div = document.createElement('div');
-        div.className = 'opt-item' + (q.type === 'multiple' ? ' multi' : '');
+        div.className = 'opt-item' + (q.type === 'multiple' ? ' multi' : '') + ' stagger';
+        div.style.animationDelay = (idx * 0.05) + 's';
         div.innerHTML = '<span class="label">' + opt.label + '</span><span class="text">' + opt.text + '</span>';
         div.dataset.label = opt.label;
         if (q.type === 'single') div.onclick = function() { App.selectSingle(opt.label); };
@@ -694,6 +750,7 @@ var App = {
   confirmAnswer: function() {
     if (this.answered || this.selectedOption === null) return;
     this.answered = true;
+    document.getElementById('confirm-btn').classList.add('btn-press');
     var q = this.currentQuestion;
     var isCorrect = false;
 
@@ -746,13 +803,17 @@ var App = {
     document.getElementById('next-btn').style.display = 'block';
 
     if (isCorrect) {
-      this.totalCorrect++;
+      this.totalCorrect++; this.streak++;
+      var sb = document.getElementById('streak-badge');
+      if (sb) { if (this.streak >= 3) { sb.style.display = 'block'; sb.textContent = '🔥 ' + this.streak + ' 连对'; } else { sb.style.display = 'none'; } }
       if (this.mode === 'career') {
         this.questionList.shift(); // 答对永久移除
         this.saveCareer();
       }
     } else {
-      this.totalWrong++;
+      this.totalWrong++; this.streak = 0;
+      var sb = document.getElementById('streak-badge');
+      if (sb) sb.style.display = 'none';
       if (this.mode === 'career') {
         var qIdx = this.questionList.shift(); // 从 queue 取出
         if (this.careerWrongIds.indexOf(qIdx) < 0) this.careerWrongIds.push(qIdx); // 放入错题池
@@ -812,10 +873,25 @@ var App = {
     var label = this.mode === 'topic' ? T.stats_topic : (this.mode === 'random' ? T.stats_random : T.stats_career);
     document.getElementById('stats-area').innerHTML = ''
       + '<div style="margin-bottom:10px;font-size:15px;color:#999;">' + label + ' · ' + T.completed + '</div>'
-      + '<div class="big-num">' + pct + '%</div>'
+      + '<div class="big-num" id="countup-num">0%</div>'
       + '<div class="label">' + T.accuracy + '</div>'
       + '<div class="detail">' + T.correct_count + ' ' + this.totalCorrect + ' / ' + T.wrong_count + ' ' + this.totalWrong + ' / ' + T.total + ' ' + total + ' ' + T.questions + '</div>'
       + '<button class="btn btn-primary" onclick="App.showHome()">' + T.home + '</button>';
+    // 数字滚动动画
+    var cnEl = document.getElementById('countup-num');
+    if (cnEl) {
+      var cur = 0;
+      var step = Math.max(1, Math.ceil(pct / 25));
+      var ct = setInterval(function() {
+        cur += step;
+        if (cur >= pct) {
+          cur = pct;
+          clearInterval(ct);
+          cnEl.style.animation = 'glow-flash 0.4s ease';
+        }
+        cnEl.textContent = cur + '%';
+      }, 20);
+    }
   },
 
   loadCareer: function() {
