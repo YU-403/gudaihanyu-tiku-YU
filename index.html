@@ -966,6 +966,23 @@ var App = {
     }
   }, 1000);
 })();
+
+// ===== 键盘快捷键 =====
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    var submitBtn = document.getElementById('confirm-btn');
+    if (submitBtn && !submitBtn.disabled && submitBtn.style.display !== 'none') submitBtn.click();
+  }
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    var nextBtn = document.getElementById('next-btn');
+    if (nextBtn && nextBtn.style.display !== 'none') { e.preventDefault(); nextBtn.click(); }
+  }
+  if (e.key >= '1' && e.key <= '4') {
+    var opts = document.querySelectorAll('.opt-item, .judge-btn');
+    var idx = parseInt(e.key) - 1;
+    if (opts[idx] && !opts[idx].classList.contains('submitted')) opts[idx].click();
+  }
+});
 </script>
 </body>
 </html>
