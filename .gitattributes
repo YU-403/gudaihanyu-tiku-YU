@@ -1,0 +1,5 @@
+# 统一按 LF 存储，避免 Windows 下 CRLF 转换把真实的文本改动淹没
+* text=auto eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.html text eol=lf

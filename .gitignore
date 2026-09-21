@@ -1,0 +1,9 @@
+# Python
+__pycache__/
+*.pyc
+
+# 备份文件
+*.bak
+
+# 构建脚本的本地副本（题库源才是版本管理的核心）
+build.bat
