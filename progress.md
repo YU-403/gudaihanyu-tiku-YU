@@ -1,0 +1,41 @@
+# Progress Log: 古汉语题库 Remake
+
+## 会话：2026-09-21（准备阶段）
+
+### 完成的事
+
+| 步骤 | 结果 |
+|:--|:--|
+| 定位项目 | GitHub `gudaihanyu-tiku-YU` ↔ 本地 `D:\Desktop\资料\考试题集\古汉语AI题库\`（index.html 均为 733,204 字节） |
+| 规模确认 | 32 个题库文件、1141 题、383 个知识点标签 |
+| 建立工作区 | `古汉语AI题库-remake`，复制 32 个文件并逐一 MD5 校验一致 |
+| Git 初始化 | `.gitignore` + `.gitattributes`（统一 LF），首次提交 `9e4db2d`（34 个文件） |
+| 原始存档 | `古汉语AI题库` 保持不动 |
+| 规划文件 | task_plan.md / findings.md / progress.md 建立于项目根目录 |
+
+### 顺带完成的 skill 修复（v2.8）
+
+准备阶段发现新版脚本读不懂旧题库，修复四项：
+
+1. 判断题答案判读放宽（繁简 + 符号 + 英文）
+2. 题块切分改为按题号（修复连续排列无分隔线导致的漏题）
+3. 构建对账改为真实统计（原逻辑自比自、永远报成功）
+4. 判断题术语按题库语体切换
+
+修复后 1141 题全部解析成功。v2.8 已三端同步（skill / 桌面 zip / GitHub，tag `v2.8`）。
+
+### 产物
+
+- `D:\Desktop\资料\考试题集\古汉语AI题库-remake\`（Git 仓库，含 32 个题库文件）
+- `D:\Desktop\资料\考试题集\古汉语AI题库\`（原始存档，未改动）
+- QuizComplete skill v2.8
+
+## 5-Question Reboot Check
+
+| Question | Answer |
+|:--|:--|
+| Where am I? | Phase 1 准备完成，即将进入 Phase 2 质量诊断 |
+| Where am I going? | 诊断 → 定规则 → 分批洗题 → 构建配色 → 发布 |
+| What's the goal? | 用新规范清洗 1141 题并重建网站，保留旧配色 |
+| What have I learned? | 见 findings.md |
+| What have I done? | 见上方记录 |
