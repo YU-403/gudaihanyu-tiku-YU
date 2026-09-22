@@ -30,6 +30,34 @@ D:\Desktop\临时\古汉语AI题库（最新版）\
 
 > 文件夹名于 2026-09-22 二次调整：`古汉语AI题库-remake` → `最新版题库`（原名易与外层及原始存档混淆）；
 > 原始存档目录加「（原始存档）」后缀以便区分。
+>
+> 产物 `index.html` 于同日由 `_preview/` 移至仓库根目录（该目录名是试构建遗留，见 git `e56bf22`）。
+
+### ⚠️ 重建命令（务必带 `--prefix`）
+
+题库的 localStorage 前缀默认取自**输出目录名**：
+
+```python
+prefix = args.prefix or 'quiz_' + os.path.basename(os.path.normpath(args.output)) + '_'
+```
+
+当前已发布产物的前缀是 **`quiz__preview_`**（源于早期的 `_preview/` 目录名）。
+若直接 `--output .` 重建而不指定前缀，前缀会变成 `quiz_最新版题库_`，
+**老用户的刷题进度将全部失联**（等同清空）。因此重建时固定用：
+
+```bash
+python <QuizComplete>/build.py \
+  --input "D:\Desktop\临时\古汉语AI题库（最新版）\最新版题库" \
+  --title "《古代漢語》刷題庫" \
+  --output "D:\Desktop\临时\古汉语AI题库（最新版）\最新版题库" \
+  --prefix "quiz__preview_" \
+  --custom-css ':root { --bg-card:#fff; --bg-card-hover:#f0ebe0; --text-primary:#2c2c2c; --text-light:#b0a090; --accent:#8b6f47; --accent-light:#e8e0d0; --accent-dark:#7a5e3a; --gold:#b8a88a; --gold-light:#e8e0d5; --border:#d4c5a9; --border-light:#e0d5c5; --success:#34a853; --success-bg:#e6f4ea; --error:#ea4335; --error-bg:#fce8e6; --shadow:rgba(92,61,46,.08); --gold-deep:#a8977a; --bg-answer:#f2efe8; --bg-expl:#f6f4ee; --bg-tag:#efede6; }'
+```
+
+（`--modes` 用默认值即可，v2.9 起默认六种全开；本项目题库无公式，不需 `--katex`。）
+
+> 若愿意承担一次进度重置，可把 `--prefix` 改为更规范的 `quiz_gudaihanyu_` 并把该值一并更新到本文件——
+> 越早改代价越小。
 
 > 教材 Markdown（`D:\Markdown导出\`）**未迁移**——它是通用的王力教材 OCR 源，
 > 在另一个盘，不只服务本题库。
