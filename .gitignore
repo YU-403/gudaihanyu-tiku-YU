@@ -8,5 +8,5 @@ __pycache__/
 # 构建脚本的本地副本（题库源才是版本管理的核心）
 build.bat
 
-# 预览构建产物（临时，不进版本管理）
-_preview/
+# 构建产物 index.html 已放在仓库根目录并纳入版本管理
+# （与 GitHub 仓库结构一致：README + index.html + 32 个题库源）
