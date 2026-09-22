@@ -862,6 +862,10 @@ const allTags = ["古漢語通論（一）《中華大字典》", "古漢語通�
 // 判斷題术语按題庫语体顯示（构建時注入）；判分與存儲一律用简体值
 const JUDGE_TRUE_LABEL = '正確';
 const JUDGE_FALSE_LABEL = '錯誤';
+// 內部规範值：必须與 parse 階段归一後的答案完全一致，**恒為简体**，
+// 不隨題庫语体變化。繁体化转換会跳過 ASCII 占位符，故此处用占位符承载。
+const ANS_TRUE = '正确';
+const ANS_FALSE = '错误';
 
   // ============================================================
   // 工具函數
@@ -1507,7 +1511,7 @@ const JUDGE_FALSE_LABEL = '錯誤';
     } else {
       var jdiv = document.createElement('div'); jdiv.className = 'judge-options';
       // dataset.value 固定用简体（與解析後的答案比對），顯示文字按題庫语体
-      [[JUDGE_TRUE_LABEL, '正確'], [JUDGE_FALSE_LABEL, '錯誤']].forEach(function(pair) {
+      [[JUDGE_TRUE_LABEL, ANS_TRUE], [JUDGE_FALSE_LABEL, ANS_FALSE]].forEach(function(pair) {
         var btn = document.createElement('div');
         btn.className = 'judge-btn'; btn.textContent = pair[0]; btn.dataset.value = pair[1];
         btn.onclick = function() {
@@ -1627,7 +1631,7 @@ const JUDGE_FALSE_LABEL = '錯誤';
 
     var boxes = document.getElementById('resultBoxes'); boxes.innerHTML = '';
     var ansText = q.type === 'judge'
-      ? (q.answer === '正確' ? JUDGE_TRUE_LABEL : JUDGE_FALSE_LABEL)
+      ? (q.answer === ANS_TRUE ? JUDGE_TRUE_LABEL : JUDGE_FALSE_LABEL)
       : (JUDGE_TRUE_LABEL + '答案 ' + q.answer);
     var ansBox = document.createElement('div');
     ansBox.className = 'result-box answer-box';
@@ -1638,7 +1642,7 @@ const JUDGE_FALSE_LABEL = '錯誤';
       var myBox = document.createElement('div');
       myBox.className = 'result-box tag-box';
       var selText = (q.type === 'judge')
-        ? (selected === '正確' ? JUDGE_TRUE_LABEL : JUDGE_FALSE_LABEL)
+        ? (selected === ANS_TRUE ? JUDGE_TRUE_LABEL : JUDGE_FALSE_LABEL)
         : selected;
       myBox.innerHTML = '<span class="rb-label">✍️ 你的作答</span>' + esc(selText);
       boxes.appendChild(myBox);
