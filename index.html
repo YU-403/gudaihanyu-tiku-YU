@@ -643,53 +643,6 @@ body::before {
   to   { transform: translate3d(1.5%, 1%, 0) scale(1.08); }
 }
 
-/* --- 遠山剪影（頁腳）：三層峰巒 + 雲霧視差漂移 ---
-   做法：SVG 多邊形路徑（480×76 瓦片）＋ mask。
-     ・捨棄 radial-gradient 的原因：橢圓永遠是半圓頂，做不出山的稜角；
-       實測寬高比從 2.84 收到 1.40，觀感仍是「饅頭」不是「山」。
-     ・三條路徑只帶 fill-opacity（0.34／0.62／1），顏色由 mask 的
-       background-color: var(--accent) 提供 → 換任何主色都自動跟隨。
-     ・層次要「後排峰最高、最淡；前排最矮、最濃」，反之會糊成一團。
-     ・路徑左緣 y = 右緣 y，故 repeat-x 平鋪無接縫。
-   漂移：background-position 走 480／960／1440px（瓦片寬整數倍）→ 循環無跳變；
-   遠層 1 格、近層 3 格 → 同向不同速，產生視差。
-   代價：background-position 屬繪製動畫，非合成層。若行動端發熱，
-   刪掉 animation 一行即回到純靜態遠山。 */
-body::after {
-  content: ''; display: block; height: 76px;
-  pointer-events: none;
-  background-color: var(--accent);          /* mask 透出的顏色 */
-  /* 三層各自一張單路徑 SVG，透明度烘進 fill-opacity；
-     mask 多層以 source-over 合成 → 重疊處取較濃者，正是想要的堆疊效果。
-     三層分離才能各自位移，產生視差。（若三層烘在同一張 SVG，只能整體平移，
-     看起來像壁紙在滑。） */
-  -webkit-mask-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='76'%3E%3Cpath fill='%23000' fill-opacity='.34' d='M 0 62 L 80 18 L 150 44 L 240 10 L 330 40 L 410 22 L 480 62 L 480 76 L 0 76 Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='76'%3E%3Cpath fill='%23000' fill-opacity='.62' d='M 0 68 L 60 34 L 130 54 L 200 26 L 280 52 L 360 32 L 430 56 L 480 68 L 480 76 L 0 76 Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='76'%3E%3Cpath fill='%23000' d='M 0 74 L 90 50 L 170 66 L 250 44 L 330 64 L 420 52 L 480 74 L 480 76 L 0 76 Z'/%3E%3C/svg%3E");
-          mask-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='76'%3E%3Cpath fill='%23000' fill-opacity='.34' d='M 0 62 L 80 18 L 150 44 L 240 10 L 330 40 L 410 22 L 480 62 L 480 76 L 0 76 Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='76'%3E%3Cpath fill='%23000' fill-opacity='.62' d='M 0 68 L 60 34 L 130 54 L 200 26 L 280 52 L 360 32 L 430 56 L 480 68 L 480 76 L 0 76 Z'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='76'%3E%3Cpath fill='%23000' d='M 0 74 L 90 50 L 170 66 L 250 44 L 330 64 L 420 52 L 480 74 L 480 76 L 0 76 Z'/%3E%3C/svg%3E");
-  -webkit-mask-size: 480px 76px, 480px 76px, 480px 76px;
-          mask-size: 480px 76px, 480px 76px, 480px 76px;
-  -webkit-mask-repeat: repeat-x, repeat-x, repeat-x;
-          mask-repeat: repeat-x, repeat-x, repeat-x;
-  animation: cloud-drift 180s linear infinite;
-}
-/* 遠層 1 格（480）／中層 2 格（960）／近層 3 格（1440）：同向不同速＝視差。
-   位移皆為瓦片寬整數倍 → 循環處無跳變。 */
-@keyframes cloud-drift {
-  from {
-    -webkit-mask-position: 0 0, 0 0, 0 0;
-            mask-position: 0 0, 0 0, 0 0;
-  }
-  to {
-    -webkit-mask-position: 480px 0, 960px 0, 1440px 0;
-            mask-position: 480px 0, 960px 0, 1440px 0;
-  }
-}
-
 /* --- 卡片四角角線（2026-09-26 重做）---
    兩類卡分型，不再共用一套：
      mode-card  雙線角（仿古籍雙邊框）——外線 8px／14px，內線 13px／9px
@@ -844,24 +797,6 @@ body::after {
     left 8px bottom 8px,     left 8px bottom 8px,
     right 8px bottom 8px,    right 8px bottom 8px;
   background-repeat: no-repeat;
-}
-
-/* --- 頂部提示條：45° 細斜紋 ---
-   必須連原漸層一起重寫（background 簡寫已把 background-image 設為 none）。 */
-.top-bar {
-  background-image:
-    repeating-linear-gradient(45deg, transparent 0 5px, rgba(255, 255, 255, 0.055) 5px 7px),
-    linear-gradient(135deg, var(--accent), var(--accent-dark));
-}
-
-/* --- 進度條刻度 ---
-   刻在軌道層、位於填充之下 → 隨進度推進被覆蓋，語義上像儀表。
-   間距固定 40px（用百分比在 repeating-gradient 裡不穩）。
-   刻度用 --border 35%：A/B 對照後定案，70% 時刻度會比填充色更搶眼。 */
-.progress-bar-wrap {
-  background-image: repeating-linear-gradient(90deg,
-    transparent 0 39px,
-    color-mix(in srgb, var(--border) 35%, transparent) 39px 40px);
 }
 
 /* --- 答題卡側欄左緣裝飾線 ---
