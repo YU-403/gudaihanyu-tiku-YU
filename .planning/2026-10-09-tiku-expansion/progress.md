@@ -56,11 +56,25 @@
 
 | Question | Answer |
 |----------|--------|
-| Where am I? | Phase 1 完成，Phase 2 待启动 |
+| Where am I? | Phase 1 完成、风格基准已定，Phase 2 待启动 |
 | Where am I going? | 主题固化 → 首轮校准 → 通論 6 章 → 常用詞 3 章 → 文選 7 篇 → 重建终验 |
 | What's the goal? | 16 个新章节出题并入题库，重建后在新章节在专题模式／知识点专项可见 |
 | What have I learned? | 见 findings.md（机制实测、OCR 分档、标签惯例、材料清单） |
 | What have I done? | 见上方 Phase 1 |
+
+## Session: 2026-10-09（续）
+
+### 风格基准与提炼方案确认
+
+- **Status:** complete
+- Actions taken:
+  - 回答用户「出题风格与样板提示怎么做」的方案询问：以现有 1122 题为唯一样本，跑数据提炼口径
+  - 预演句式统计（n = 1122），实测教材四册无练习题、题库零使用否定式设问
+  - 用户确认暂无真题／教师练习题，按现有题目保持风格一贯性
+  - 将「风格提炼 → 口径卡 → 6 道标杆题 → 首轮校准」展开进 Phase 3
+- Files created/modified:
+  - `.planning/2026-10-09-tiku-expansion/task_plan.md`（Phase 3 展开为 6 个子步骤，新增 3 条决策）
+  - `.planning/2026-10-09-tiku-expansion/findings.md`（新增第八节：样本基准与句式预演）
 
 ---
 
