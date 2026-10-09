@@ -1,0 +1,390 @@
+/* ============================================================
+   《古代漢語》刷題庫 · 主題覆蓋層（宣紙石青）
+   ------------------------------------------------------------
+   用途：由 rebuild.ps1 在 build.py 產出 index.html 之後，追加到樣式表
+         末尾（結束標籤之前），用來還原已驗收的「石青」主題
+         （配色 + 裝飾層 + 對比度修正）。
+
+         本檔不可出現 HTML 的樣式結束標籤字面量：style 屬 raw-text 元素，
+         一旦出現會被瀏覽器提前閉合，其後 CSS 全部洩為頁面文字。
+
+         注意：不可改用 build.py 的 --custom-css 傳入——該參數被拼在
+         __STYLE_CSS__ 佔位符處（樣式表前部），同選擇器的覆蓋會被
+         其後的模板規則打敗，只有 :root 變數能生效。
+
+   來源：2026-10-09 由已驗收的 index.html 樣式表與 build.py 模板逐條
+         差分抽離而成（330 行新增 / 17 行替換）。內容為機械抽取，
+         僅對 8 處「插入既有規則內部」的聲明做結構修補，無主觀改動。
+
+   使用：見倉庫根目錄 rebuild.ps1 / rebuild.bat。
+         標準重建命令必須同時帶 --prefix quiz_gudaihanyu_。
+
+   注意：本層依賴「後寫勝先寫」。規則順序與已驗收的 index.html 一致，
+         不可隨意調整（例：.stat-card 角線規則在版面規則之前）。
+   ============================================================ */
+
+:root {
+  --gold-deep: #d4a843;
+  --gold-ink: #7d5f33;   /* 金色系文字專用（夠暗，壓得住淺金底） */
+  --bg-answer: #f0ede6;
+  --bg-expl: #f5f2eb;
+  --bg-tag: #edebe3;
+  /* 裝飾用色，獨立於交互色 --error／--success；
+     模板預設與 --error 同值以保持原觀感，實際專案在本區塊下方覆寫。 */
+  --seal: #b8451e;
+}
+/* 宣紙簾紋：細密豎紋 + 稀疏橫紋。氛圍光斑已移至 body::before，以便緩慢漂移 */
+body { background-image: repeating-linear-gradient(90deg, transparent 0 3px, rgba(169, 142, 95, 0.045) 3px 4px), repeating-linear-gradient(0deg, transparent 0 5px, rgba(169, 142, 95, 0.03) 5px 6px); }
+body { background-image: repeating-linear-gradient(90deg, transparent 0 3px, color-mix(in srgb, var(--gold) 4.5%, transparent) 3px 4px), repeating-linear-gradient(0deg, transparent 0 5px, color-mix(in srgb, var(--gold) 3%, transparent) 5px 6px); }
+/* ============================================================
+   配色方案：東方古典 · 宣紙石青（2026-09-26 改 · 方案 B）
+   宣紙底 + 墨字 + 石青（主色）+ 金 + 絳紫（裝飾）
+   ------------------------------------------------------------
+   色相槽位安排（交互紅綠為保留槽，不可佔用）：
+     答對 150° ／ 答錯 7°   ← 保留，僅供作答反饋
+     主色 石青 207°（距兩槽 57°）· 金 40°（距 33°）· 絳紫 338°（距 29°）
+   原設計的兩處語義衝突一併修正：
+     ① 竹青 150° 與「答對」151° 僅差 1° → 主色移至 207° 讓出該槽
+     ② 裝飾朱砂直接借用 --error → 改用獨立 --seal（絳紫），
+        使「答錯」紅成為專屬交互色
+   ============================================================ */
+:root {
+  --bg-page: #f5f0e6;            /* 宣紙 */
+  --bg-card: #fbf8f1;            /* 暖白卡片 */
+  --bg-card-hover: #f3efe5;
+  --text-primary: #2b2925;       /* 墨 */
+  --text-secondary: #5c574d;     /* 淡墨 */
+  --text-light: #8a8478;         /* 灰墨 */
+  --accent: #3a5f7d;             /* 石青（主色，207°） */
+  --accent-light: #c8dae8;       /* 淺石青：已作答態 */
+  --accent-dark: #2a4557;        /* 石青深 */
+  --gold: #b5924a;               /* 金（藤黃，40°） */
+  --gold-light: #efe3ca;
+  --gold-deep: #8a6a3b;          /* 赭石：兼作多選標籤（白字對比 4.99:1） */
+  --gold-ink: #7d5f33;           /* 金色系文字專用（壓淺金底 4.64:1） */
+  --border: #d6ccb8;             /* 線 */
+  --border-light: #e5ddcc;
+  --success: #43705a;            /* 松綠：答對（保留槽 150°） */
+  --success-bg: #dde7de;
+  --error: #a63a2c;              /* 朱砂：答錯（保留槽 7°） */
+  --error-bg: #f7e4de;
+  --shadow: rgba(43, 41, 37, 0.08);
+  /* 三個信息框分色，避免全擠在 40° 暖調 */
+  --bg-answer: #f2ebdb;          /* 答案框：暖（金） */
+  --bg-expl: #eef3f7;            /* 解析框：冷（石青） */
+  --bg-tag: #eae7e0;             /* 標籤框：中性 */
+  --seal: #7a3b52;               /* 絳紫（338°）：裝飾專用 */
+}
+/* 標題裝飾線：向兩端漸隱的金線 + 中心朱砂點，入場時自中心展開（見裝飾層 rule-expand）*/
+.site-title::after {
+  content: ''; display: block; width: 240px; height: 6px; margin: 18px auto 0;
+  background-image:
+    linear-gradient(90deg, transparent, var(--gold) 50%, transparent),
+    radial-gradient(circle at 50% 50%, var(--seal) 0 2.5px, transparent 2.5px);
+  background-size: 100% 1px, 100% 100%;
+  background-position: center, center;
+  background-repeat: no-repeat;
+  animation: rule-expand 0.8s cubic-bezier(0.2, 0.7, 0.3, 1) 0.15s backwards;
+}
+.mode-badge.zero { background: var(--border-light); color: var(--text-secondary); font-weight: 400; }
+.q-type.single { color: #fff; background: var(--accent); }
+.q-type.multiple { color: #fff; background: var(--gold-deep); }
+.q-type.judge { color: #fff; background: var(--text-secondary); }
+.q-section { font-size: 12px; color: var(--gold-ink); background: var(--gold-light); padding: 2px 10px; border-radius: 10px; }
+.opt-item.selected {
+  border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent);
+  animation: select-pulse 0.35s ease;
+}
+/* 0 alpha 用主题色本身推导，避免动画经过纯黑透明导致发灰 */
+@keyframes select-pulse {
+  0% { box-shadow: 0 0 0 0 var(--accent-light); }
+  100% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 0%, transparent); }
+}
+@keyframes correct-glow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 15%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--success) 8%, transparent); }
+}
+.judge-btn.selected {
+  border-color: var(--accent); background: rgba(184, 69, 30, 0.06);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+.btn-secondary { background: var(--gold-deep); color: #fff; border-color: var(--gold-deep); }
+.q-flag-btn.on .star {
+  opacity: 1; filter: saturate(1.25) drop-shadow(0 0 5px rgba(201, 168, 76, 0.9));
+  filter: saturate(1.25) drop-shadow(0 0 5px color-mix(in srgb, var(--gold) 90%, transparent));
+}
+.sheet-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: color-mix(in srgb, var(--text-primary) 42%, transparent);
+  z-index: 950; opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.sheet-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 360px; max-width: 92vw;
+  background: var(--bg-card); border-left: 1px solid var(--border);
+  z-index: 960; display: flex; flex-direction: column;
+  transform: translateX(105%); transition: transform 0.3s ease;
+  box-shadow: -8px 0 32px color-mix(in srgb, var(--text-primary) 15%, transparent);
+}
+.answer-box { background: var(--bg-answer); border-left: 3px solid var(--gold); }
+.expl-box { background: var(--bg-expl); border-left: 3px solid var(--gold); }
+.tag-box { background: var(--bg-tag); border-left: 3px solid var(--border); font-size: 12px; color: var(--text-secondary); font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+.streak-badge {
+  display: none; background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+  color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 13px;
+  font-weight: 600; font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  animation: streak-pulse 0.6s ease backwards;
+}
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: color-mix(in srgb, var(--text-primary) 50%, transparent); backdrop-filter: blur(4px);
+  z-index: 1000; display: none; align-items: center; justify-content: center;
+}
+.modal {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px; max-width: 480px; width: 90%;
+  max-height: 80vh; overflow-y: auto;
+  box-shadow: 0 16px 48px color-mix(in srgb, var(--text-primary) 15%, transparent);
+  animation: modal-in 0.3s ease backwards;
+}
+/* 考試結算彈窗：加寬以容納三張統計卡橫向並列（560-64=496px > 3×120+32=392px） */
+#modalExamResult .modal { max-width: 560px; }
+/* ============================================================
+   裝飾層（2026-09-26 新增）
+   純 CSS 靜態裝飾與自動播放動畫，不含交互邏輯、不依賴 JS。
+   語彙：宣紙簾紋 · 竹青／金角線 · 緩慢呼吸的光
+   ============================================================ */
+:root {
+  --corner: color-mix(in srgb, var(--gold) 55%, transparent);    /* 外線 */
+  --corner-2: color-mix(in srgb, var(--gold) 30%, transparent);  /* 雙線角的內線 */
+}
+
+/* --- 環境光斑：極緩漂移（用 transform 走合成層，不觸發整頁重繪）--- */
+body { isolation: isolate; }
+body::before {
+  content: ''; position: fixed; inset: -15%;
+  z-index: -1; pointer-events: none;
+  background-image:
+    radial-gradient(ellipse at 25% 30%, color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 55%),
+    radial-gradient(ellipse at 78% 70%, color-mix(in srgb, var(--gold) 6%, transparent) 0%, transparent 55%);
+  animation: bg-drift 36s ease-in-out infinite alternate;
+}
+@keyframes bg-drift {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+  to   { transform: translate3d(1.5%, 1%, 0) scale(1.08); }
+}
+
+/* --- 卡片四角角線（2026-09-26 重做）---
+   兩類卡分型，不再共用一套：
+     mode-card  雙線角（仿古籍雙邊框）——外線 8px／14px，內線 13px／9px
+                **右上角省略**：該角由數量徽標（.mode-badge, top10 right10）獨占，
+                原單線角的垂直臂落在距邊 8px、與徽標僅差 1—2px，視覺上糊在一起。
+     stat-card  單線角 + 朱砂角點——線 6px／10px，點心正落在角線交點
+   內縮安全線：圓角 12px，內切點距角 12−12/√2 ≈ 3.5px，故 >=6px 不會被裁切。 */
+
+/* 主卡：雙線角，僅三處 */
+.mode-card {
+  background-image:
+    linear-gradient(var(--corner), var(--corner)),   linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner-2), var(--corner-2)), linear-gradient(var(--corner-2), var(--corner-2)),
+    linear-gradient(var(--corner), var(--corner)),   linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner-2), var(--corner-2)), linear-gradient(var(--corner-2), var(--corner-2)),
+    linear-gradient(var(--corner), var(--corner)),   linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner-2), var(--corner-2)), linear-gradient(var(--corner-2), var(--corner-2));
+  background-size:
+    14px 1px, 1px 14px,  9px 1px, 1px 9px,
+    14px 1px, 1px 14px,  9px 1px, 1px 9px,
+    14px 1px, 1px 14px,  9px 1px, 1px 9px;
+  background-position:
+    left 8px top 8px,        left 8px top 8px,
+    left 13px top 13px,      left 13px top 13px,
+    left 8px bottom 8px,     left 8px bottom 8px,
+    left 13px bottom 13px,   left 13px bottom 13px,
+    right 8px bottom 8px,    right 8px bottom 8px,
+    right 13px bottom 13px,  right 13px bottom 13px;
+  background-repeat: no-repeat;
+}
+
+/* 統計卡：單線角 + 朱砂角點（點心 = 角線交點，靠 4px 點框 + 4px 位移對齊）。
+   臂長 12px／點徑 2.5px 為 A/B 對照後的最優組合：
+   10px／3px 時點壓過線，2px 又退化成小噪點。 */
+.stat-card {
+  background-image:
+    linear-gradient(var(--corner), var(--corner)),   linear-gradient(var(--corner), var(--corner)),
+    radial-gradient(circle, var(--seal) 0 1.25px, transparent 1.35px),
+    linear-gradient(var(--corner), var(--corner)),   linear-gradient(var(--corner), var(--corner)),
+    radial-gradient(circle, var(--seal) 0 1.25px, transparent 1.35px),
+    linear-gradient(var(--corner), var(--corner)),   linear-gradient(var(--corner), var(--corner)),
+    radial-gradient(circle, var(--seal) 0 1.25px, transparent 1.35px),
+    linear-gradient(var(--corner), var(--corner)),   linear-gradient(var(--corner), var(--corner)),
+    radial-gradient(circle, var(--seal) 0 1.25px, transparent 1.35px);
+  background-size:
+    12px 1px, 1px 12px,  4px 4px,
+    12px 1px, 1px 12px,  4px 4px,
+    12px 1px, 1px 12px,  4px 4px,
+    12px 1px, 1px 12px,  4px 4px;
+  background-position:
+    left 6px top 6px,        left 6px top 6px,        left 4px top 4px,
+    right 6px top 6px,       right 6px top 6px,       right 4px top 4px,
+    left 6px bottom 6px,     left 6px bottom 6px,     left 4px bottom 4px,
+    right 6px bottom 6px,    right 6px bottom 6px,    right 4px bottom 4px;
+  background-repeat: no-repeat;
+}
+
+/* --- 首頁模式卡錯峰入場 --- */
+.mode-card { animation: card-rise 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+.mode-card:nth-child(1) { animation-delay: 0.06s; }
+.mode-card:nth-child(2) { animation-delay: 0.12s; }
+.mode-card:nth-child(3) { animation-delay: 0.18s; }
+.mode-card:nth-child(4) { animation-delay: 0.24s; }
+.mode-card:nth-child(5) { animation-delay: 0.30s; }
+.mode-card:nth-child(6) { animation-delay: 0.36s; }
+@keyframes card-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes rule-expand {
+  from { opacity: 0; transform: scaleX(0); }
+  to   { opacity: 1; transform: scaleX(1); }
+}
+
+/* --- 列表項角線（S1）---
+   章節列表與收藏項各取左上、右下兩角，避免四角在小卡上顯重。
+   內縮 6px ≥ 圓角 10px 的內切點 2.9px，不會被裁切。 */
+.section-item, .fav-item {
+  background-image:
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner));
+  background-size: 11px 1px, 1px 11px, 11px 1px, 1px 11px;
+  background-position:
+    left 6px top 6px,          left 6px top 6px,
+    right 6px bottom 6px,      right 6px bottom 6px;
+  background-repeat: no-repeat;
+}
+
+/* --- 雲紋分隔線（S3）---
+   取代題幹原本的 1px dashed：金線向兩端漸隱 + 中心絳紫菱形。 */
+.q-text { border-bottom: none; padding-bottom: 12px; position: relative; }
+.q-text::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 7px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, transparent, var(--gold) 50%, transparent),
+    radial-gradient(circle at 50% 50%, var(--seal) 0 2.5px, transparent 2.6px);
+  background-size: 100% 1px, 100% 100%;
+  /* 兩層都必須居中：線若用 `center bottom` 會落在盒底（y=6–7），
+     而點居中（中心 y=3.5），兩者相差 3px，點就浮在線外。 */
+  background-position: center, center;
+  background-repeat: no-repeat;
+}
+
+/* --- 列表逐條浮入（D1）---
+   前 8 條各遞 0.04s，之後統一下發 0.32s（＝第 8 條的延遲）。
+   若每條都遞加，32 個題集時最後一條要等 1.3s 才出現。
+   沿用既有 card-rise 關鍵幀，fill 為 backwards，
+   故動畫結束後回到基礎樣式，不影響 :hover 的 transform。 */
+.section-item, .fav-item {
+  animation: card-rise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) 0.32s backwards;
+}
+.section-item:nth-child(1), .fav-item:nth-child(1) { animation-delay: 0.04s; }
+.section-item:nth-child(2), .fav-item:nth-child(2) { animation-delay: 0.08s; }
+.section-item:nth-child(3), .fav-item:nth-child(3) { animation-delay: 0.12s; }
+.section-item:nth-child(4), .fav-item:nth-child(4) { animation-delay: 0.16s; }
+.section-item:nth-child(5), .fav-item:nth-child(5) { animation-delay: 0.20s; }
+.section-item:nth-child(6), .fav-item:nth-child(6) { animation-delay: 0.24s; }
+.section-item:nth-child(7), .fav-item:nth-child(7) { animation-delay: 0.28s; }
+.section-item:nth-child(8), .fav-item:nth-child(8) { animation-delay: 0.32s; }
+
+/* --- 題目主容器角線 ---
+   答題頁最大的卡片，原僅 1px 邊框，與同級容器（模式卡／列表項／統計卡）不一致。
+   用四角單線、臂長 16px：卡片大，單線不會像雙線角那樣搶戲。
+   內縮 10px ≥ 圓角 12px 的內切點 3.5px，不會被裁切。 */
+.question-area {
+  background-image:
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner));
+  background-size: 16px 1px, 1px 16px, 16px 1px, 1px 16px, 16px 1px, 1px 16px, 16px 1px, 1px 16px;
+  background-position:
+    left 10px top 10px,       left 10px top 10px,
+    right 10px top 10px,      right 10px top 10px,
+    left 10px bottom 10px,    left 10px bottom 10px,
+    right 10px bottom 10px,   right 10px bottom 10px;
+  background-repeat: no-repeat;
+}
+
+/* --- 標籤樹角線（彈窗內的知識點分組）--- */
+.tag-tree {
+  background-image:
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner)),
+    linear-gradient(var(--corner), var(--corner)), linear-gradient(var(--corner), var(--corner));
+  background-size: 12px 1px, 1px 12px, 12px 1px, 1px 12px, 12px 1px, 1px 12px, 12px 1px, 1px 12px;
+  background-position:
+    left 8px top 8px,        left 8px top 8px,
+    right 8px top 8px,       right 8px top 8px,
+    left 8px bottom 8px,     left 8px bottom 8px,
+    right 8px bottom 8px,    right 8px bottom 8px;
+  background-repeat: no-repeat;
+}
+
+/* --- 答題卡側欄左緣裝飾線 ---
+   .sheet-panel 是 position: fixed 且有 transform → 已成絕對定位的包含塊，
+   ::before 可直接相對它定位。 */
+.sheet-panel::before {
+  content: ''; position: absolute; left: 9px; top: 14px; bottom: 14px; width: 1px;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--gold) 35%, var(--gold) 65%, transparent);
+  opacity: 0.55;
+}
+
+/* --- 彈窗標題分隔線 ---
+   彈窗的 h2 對齊不統一（部分 text-align:center、部分左對齊），
+   故用「居中向兩端漸隱」而非下劃線：兩種對齊下都成立。 */
+.modal h2::after {
+  content: ''; display: block; height: 1px; margin-top: 10px;
+  background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+}
+
+/* --- 題型標籤：頂部高光 --- */
+.q-type { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22); }
+
+/* --- 完成頁徽章：光環緩呼吸 + 外圈柔光 ---
+   .big-icon 加 isolation 自成層疊上下文，否則 z-index:-1 的偽元素
+   會掉到卡片背景之後而不只是徽章之後。 */
+.complete-page .big-icon { position: relative; isolation: isolate; }
+.complete-page .big-icon::before {
+  content: ''; position: absolute; left: 50%; top: 50%; z-index: -1;
+  width: 168px; height: 168px; margin: -84px 0 0 -84px;
+  pointer-events: none;
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--gold) 12%, transparent) 0%,
+    transparent 68%);
+}
+.complete-page .big-icon::after {
+  content: ''; position: absolute; left: 50%; top: 50%; z-index: -1;
+  width: 104px; height: 104px; margin: -52px 0 0 -52px;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: 50%; pointer-events: none;
+  animation: halo-pulse 3.4s ease-in-out infinite;
+}
+@keyframes halo-pulse {
+  0%, 100% { transform: scale(0.92); opacity: 0.9; }
+  50%      { transform: scale(1.08); opacity: 0.3; }
+}
+
+/* --- 無障礙：尊重系統「減少動態」偏好 --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; margin: 24px 0; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 12px; }
+.stat-card .stat-num { font-size: 30px; font-weight: 700; color: var(--accent); font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
