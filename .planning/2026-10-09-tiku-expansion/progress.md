@@ -76,6 +76,37 @@
   - `.planning/2026-10-09-tiku-expansion/task_plan.md`（Phase 3 展开为 6 个子步骤，新增 3 条决策）
   - `.planning/2026-10-09-tiku-expansion/findings.md`（新增第八节：样本基准与句式预演）
 
+## Session: 2026-10-09（Phase 2 执行）
+
+### Phase 2: 构建链路前置
+
+- **Status:** complete
+- Actions taken:
+  - 基线构建（v2.11、无主题），与已验收 index.html 做样式表差分 → 330 行新增 / 17 行替换
+  - 抽成主题层 `_theme\石青.css`（365 行），修补 8 处「插入既有规则内部」的悬空声明
+  - 首次方案 `--custom-css` 失败：注入点在样式表前部，覆盖类规则全被模板规则打败
+  - 改为 `rebuild.ps1` 构建后追加；期间踩掉 `<style>` 提前闭合、PowerShell 编码两个坑
+  - 修正重建暴露的两处「解析引用选项字母」（原本已指向错误选项）
+  - 产物重建 + 全量验证 + 分批提交
+- Files created/modified:
+  - 新增 `_theme\石青.css`、`rebuild.ps1`、`rebuild.bat`
+  - 修改 `index.html`（用新链路重建）、`通论部分\古代漢語-古漢語通論二/三-專題題集.md`（解析去字母化）
+
+## Test Results（Phase 2）
+
+| Test | 期望 | 实际 | Status |
+|------|------|------|--------|
+| 样式表语义比对（已验收 vs 新产物） | 值不同 = 0 | 0；新产物仅多 1 条被完全覆盖的 `background` 简写 | ✅ |
+| 题目总数 | 1122 | 1122 | ✅ |
+| 专题模式条目 | 32 | 32 | ✅ |
+| 知识点标签 | 382 | 382 | ✅ |
+| 存储前缀 | `quiz_gudaihanyu_` | `quiz_gudaihanyu_` | ✅ |
+| 内联 JS 语法 | node --check 通过 | 通过（2 个 script 块） | ✅ |
+| 判断题判定链路 | 按钮值集合 == 答案取值集合 | 相等（正确 / 错误） | ✅ |
+| 构建告警「解析引字母」 | 0 条 | 0 条（修正前 2 条） | ✅ |
+| 构建对账 | 1122 题全解析、ID 无重复 | 符合 | ✅ |
+| 主题自检（rebuild.ps1 内建） | 通过 | 通过 | ✅ |
+
 ---
 
 *Update this file after completing a phase, running validation, or encountering an error.*
