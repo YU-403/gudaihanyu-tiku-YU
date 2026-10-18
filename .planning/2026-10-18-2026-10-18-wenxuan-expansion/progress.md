@@ -92,5 +92,5 @@
 ### 产物盘点
 
 - 最终保留：9 个新增题集、`index.html`、`README.md`、`FACT.md`、本轮 planning 文件。
-- 中间产物：仓库内 `tmp/` 已移到外层 `_tmp_wenxuan_formal_work/`，不进入 Git。
-- 校准源：已移到外层 `_tmp_calibration_wenxuan/`，不进入正式题库。
+- 中间产物：仓库内 `tmp/` 与校准源均已移入系统临时目录
+  `C:\Users\YU\AppData\Local\Temp\codex-gudai-wenxuan-20261018\`，不进入项目与 Git。
