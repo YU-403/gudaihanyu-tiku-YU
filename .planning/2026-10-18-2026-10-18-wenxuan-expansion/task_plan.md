@@ -7,10 +7,10 @@
 
 ## Next Step
 
-执行第三批：伐檀、碩鼠、蒹葭。
+最终提交并盘点本轮全部产物。
 
 ## Current Phase
-Phase 2：正式分批生产
+Phase 5：文档、提交与收尾
 
 ## Phases
 
@@ -29,29 +29,29 @@ Phase 2：正式分批生产
 - [x] 用户确认 V2 口径
 - [x] 第一批：靜女 18、氓 36、木瓜 15
 - [x] 第二批：黍離 18、君子于役 18、風雨 15
-- [ ] 第三批：伐檀、碩鼠、蒹葭
-- [ ] 按教材序插入并重排现有文选顺序号
-- **Status:** in_progress（前两批已完成，进入第三批）
+- [x] 第三批：伐檀 18、碩鼠 18、蒹葭 18
+- [x] 按教材序插入并重排现有文选顺序号
+- **Status:** complete
 
 ### Phase 3: 构建与自动审计
-- [ ] 运行标准 `rebuild.ps1`
-- [ ] 核对新题块数、解析数、ID、答案格式
-- [ ] 核对选项长度、不定项全选率、专题顺序
-- [ ] 检查 JS 语法、主题层与题目总数
-- **Status:** pending
+- [x] 运行标准 `rebuild.ps1`
+- [x] 核对新题块数、解析数、ID、答案格式
+- [x] 核对选项长度、不定项全选率、专题顺序
+- [x] 检查 JS 语法、主题层与题目总数
+- **Status:** complete
 
 ### Phase 4: 终验
-- [ ] 全库原 1723 题基线保留
-- [ ] 新增 9 章题量与答案完整
-- [ ] 判断题繁简 × 正误四组合回归
-- [ ] 重建可复现检查
-- **Status:** pending
+- [x] 全库原 1723 题基线保留
+- [x] 新增 9 章题量与答案完整
+- [x] 判断题繁简 × 正误四组合回归
+- [x] 重建可复现检查
+- **Status:** complete
 
 ### Phase 5: 文档、提交与收尾
-- [ ] 更新 README、FACT.md、JOURNAL、planning 文件
+- [x] 更新 README、FACT.md、JOURNAL、planning 文件
 - [ ] 提交本地 Git
 - [ ] 列出全部产物，删除临时文件，确认工作树干净
-- **Status:** pending
+- **Status:** in_progress
 
 ## Decisions Made
 | Decision | Rationale |
