@@ -49,9 +49,10 @@ Phase 5：文档、提交与收尾
 
 ### Phase 5: 文档、提交与收尾
 - [x] 更新 README、FACT.md、JOURNAL、planning 文件
-- [ ] 提交本地 Git
-- [ ] 列出全部产物，删除临时文件，确认工作树干净
-- **Status:** in_progress
+- [x] 本地 Git 按三批数据与一次文档提交完成
+- [x] 仓库内临时文件已移出，产物已盘点
+- [x] 确认正式工作树状态
+- **Status:** complete
 
 ## Decisions Made
 | Decision | Rationale |
@@ -70,3 +71,4 @@ Phase 5：文档、提交与收尾
 |-------|---------|------------|
 | 前两次状态检查误用不可用 Bash 通道 | 1 | 改用 PowerShell，未产生文件改动 |
 | V1 校准过易且考法偏离目标 | 1 | 按反馈重做为 V2，目标考点占 6/9 |
+| 文档提交误用 Bash 通道 | 1 | 改用 PowerShell 重跑，未产生提交 |
